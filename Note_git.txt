@@ -1,0 +1,21 @@
+https://github.com/Jhonsphorus/Time_Series2.git
+echo "# Time_Series_R" >> README.md
+
+Method 1:
+
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/Jhonsphorus/Time_Series2.git
+git push -u origin master
+
+Method 2:
+-i. You do this first before creating the repo called 'Time_Series2'
+
+git remote add origin https://github.com/Jhonsphorus/Time_Series2.git
+
+-ii. After running step i on the git bash you then go to online githun to create the repository
+ 'Time_Series2'
+-iii. Then run the command below on your git bash
+git push -u origin master
+                

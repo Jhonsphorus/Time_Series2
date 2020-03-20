@@ -1,0 +1,1 @@
+This is amodel built using time series in R
