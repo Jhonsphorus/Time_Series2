@@ -1,0 +1,2 @@
+"0","plot(aggregate(AirPassengers,FUN=mean))"
+"0",""

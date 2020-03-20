@@ -1,0 +1,2 @@
+"0","# both acf() and pacf() generates plots by default"
+"0","acfRes <- acf(AirPassengers) # autocorrelation"

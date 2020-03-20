@@ -1,0 +1,2 @@
+"0","# shifted 3 periods earlier. Use `-3` to shift by 3 periods forward."
+"0","laggedTS <- lag(tsData, 3) "

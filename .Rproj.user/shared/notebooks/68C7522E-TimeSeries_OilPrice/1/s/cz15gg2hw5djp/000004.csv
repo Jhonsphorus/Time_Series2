@@ -1,0 +1,4 @@
+"0","forecast_ma <- forecast(price_ma, h=2*365)"
+"0","View(forecast_ma$upper)"
+"0","#View(forecast_ma$fitted)"
+"0","#View(forecast_ma$x)"

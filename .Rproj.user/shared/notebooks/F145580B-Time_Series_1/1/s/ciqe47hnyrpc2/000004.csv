@@ -1,0 +1,3 @@
+"0","b = rnorm(1000)"
+"0","c <- ts (b,frequency = 12, start = c(1990, 1)) # freq 12 => Monthly data. "
+"0","#c"

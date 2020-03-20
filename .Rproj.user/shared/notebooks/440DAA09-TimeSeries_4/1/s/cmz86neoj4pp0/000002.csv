@@ -1,0 +1,2 @@
+"0","#bike <- read.csv(""day.csv"")"
+"0","daily_data = read.csv('day.csv', header=TRUE, stringsAsFactors=FALSE)"

@@ -1,0 +1,1 @@
+"0","pred_auto <- predict(oil_fit, n.head = 10*365)"

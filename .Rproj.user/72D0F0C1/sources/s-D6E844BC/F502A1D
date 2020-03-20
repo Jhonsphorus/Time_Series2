@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1583185093791.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "F502A1D",
+    "lastKnownWriteTime" : 1583947026,
+    "last_content_update" : 1583947026220,
+    "path" : "~/RProject/Personal_Projects/Time_Series/Time_Series_1.Rmd",
+    "project_path" : "Time_Series_1.Rmd",
+    "properties" : {
+        "cursorPosition" : "130,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

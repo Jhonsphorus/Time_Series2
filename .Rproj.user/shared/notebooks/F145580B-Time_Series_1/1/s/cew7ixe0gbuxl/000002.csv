@@ -1,0 +1,3 @@
+"0","TS <- AirPassengers"
+"0","dec_dt1 <- stl(TS, s.window = ""periodic"") # decompose the TS"
+"0","deseason_dt1 <- seasadj(dec_dt1) # de-seasonalize"

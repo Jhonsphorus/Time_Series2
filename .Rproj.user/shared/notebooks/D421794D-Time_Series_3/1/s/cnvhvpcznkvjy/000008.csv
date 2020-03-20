@@ -1,0 +1,2 @@
+"0","model1 <- hw(dt, initial = ""optimal"", h=40, beta=NULL, gamma=NULL)"
+"0","plot(model1)"

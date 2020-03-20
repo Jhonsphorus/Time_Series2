@@ -1,0 +1,11 @@
+"0","# Loading the require library for de-seasonal process"
+"0","library(forecast)"
+"2","package ‘forecast’ was built under R version 3.6.2"
+"2","Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     
+"
+"2","Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo 
+"

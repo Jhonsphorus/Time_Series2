@@ -1,0 +1,4 @@
+"0","price_hw <- hw(dt_oil, initial = ""optimal"", h=40, beta=NULL, gamma=NULL)"
+"2","Error in ets(x, ""AAA"", alpha = alpha, beta = beta, gamma = gamma, phi = phi,  : 
+  Frequency too high
+"

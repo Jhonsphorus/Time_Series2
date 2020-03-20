@@ -1,0 +1,1 @@
+"0","plot(stl(dt_oil, s.window = ""periodic""))"

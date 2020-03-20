@@ -1,0 +1,4 @@
+"0","stationaryTS <- diff(AirPassengers_seasdiff, differences= 1)"
+"0",""
+"0","# appears to be stationary"
+"0","plot(stationaryTS, type=""l"", main=""Differenced and Stationary"")  "

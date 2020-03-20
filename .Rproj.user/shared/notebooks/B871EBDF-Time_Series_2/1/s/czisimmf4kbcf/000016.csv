@@ -1,0 +1,3 @@
+"0","#Box plot across months will give us a sense on seasonal effect"
+"0","boxplot(AirPassengers~cycle(AirPassengers),col=c(""red"",""green"",""blue"",""yellow"",""cyan"",""orange"",""pink"",""purple"",""magenta"",""white""))"
+"0",""

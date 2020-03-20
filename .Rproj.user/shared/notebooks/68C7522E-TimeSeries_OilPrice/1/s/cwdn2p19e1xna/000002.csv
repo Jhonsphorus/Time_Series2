@@ -1,0 +1,2 @@
+"0","#predicted_price <- predict(fit, n.head = 5*365)"
+"0","forecasted_price <- forecast(fit, h = 5*365)"

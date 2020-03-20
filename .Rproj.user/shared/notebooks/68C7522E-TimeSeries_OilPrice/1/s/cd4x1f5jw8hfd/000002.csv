@@ -1,0 +1,2 @@
+"0","oil_fit <- auto.arima(dt_oil, stationary =FALSE, seasonal = TRUE)"
+"0","#oil_fit <- auto.arima(dt_oil)"

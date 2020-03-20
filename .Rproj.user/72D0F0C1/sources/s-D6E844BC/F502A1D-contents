@@ -1,0 +1,819 @@
+---
+title: "Time Series"
+author: "Johnson Adebayo_SCV1007 (Cohort 1)"
+date: "3/2/2020"
+output: html_document
+---
+
+# Project link: http://r-statistics.co/Time-Series-Analysis-With-R.html
+
+# Time Series
+```{r}
+# Time series dataset
+data("AirPassengers") # Time series dataset
+```
+
+
+```{r}
+str(AirPassengers)
+class(AirPassengers)
+```
+
+
+```{r}
+summary(AirPassengers)
+```
+
+
+```{r}
+boxplot(AirPassengers, col = "green")
+```
+
+# Time series plot
+```{r}
+#View(AirPassengers)
+plot(AirPassengers)
+```
+
+# Alternative function for plotting time series
+```{r}
+plot.ts(AirPassengers, col="red", xlab="Time (Year)" )
+```
+
+# More examples:
+```{r}
+library(timeSeries)
+```
+
+
+```{r}
+datasets::mdeaths # time series dataset
+```
+
+
+```{r}
+#plot(mdeaths)
+plot.ts(mdeaths)
+
+```
+
+# Example: 
+```{r}
+data("MSFT")
+```
+
+```{r}
+MSFT
+```
+
+```{r}
+plot(MSFT)
+```
+
+```{r}
+#plot(MSFT)
+plot(MSFT[, c("High","Low","Close","Open")], plot.type = "single",lty=c("solid","dotted","solid","dotted"), col = c("red","blue","yellow","black"))
+```
+
+
+For multivariate time series, we can decide to plot the series separately with a common time axis (plot.type="multiple") or on a single plot (plot.type="single").
+
+```{r}
+#plot(MSFT[,c("High","Low")])
+plot(MSFT[,c("High","Low")],plot.type = "multiple" )
+```
+
+
+```{r}
+plot(MSFT[,c("High","Low")],plot.type = "single" )
+```
+
+# The output of this plot for the 'high' values(green straight line) is because its values are far lesser than # that of the volume and they are using common axis
+```{r}
+plot(MSFT[, c("High","Volume")], plot.type="single", col = c("green","red"))
+```
+
+
+```{r}
+plot(MSFT[, c("High","Volume")], plot.type="multiple")
+```
+
+# Plotting two time series on th same graph with different vertical axes
+```{r}
+plot(MSFT[, "High"])
+par(new = TRUE) # Not clean the frame before drawing
+plot(MSFT[, "Volume"], axes = FALSE, ann = FALSE, col = "green")
+axis(4) # New axis on the right-hand side
+mtext("Volume", 4) # Is used to write text into the margins of a plot
+
+```
+
+# More Examples
+```{r}
+dt1 <- boot::acme
+dt1
+```
+
+  
+```{r}
+plot.ts(dt1[, c("market","acme")], plot.type = "single", col=c("red","green"))
+```
+
+# Creating "time series" object
+```{r}
+prices <- c(132.45, 130.85,20,5,120, 130.00, 129.55, 130.85,3,50)
+dates <- as.Date(c("2010-01-04","2010-01-05","2010-01-06","2010-01-07","2010-01-08","2010-01-09", "2010-01-10", "2010-01-11","2010-01-12","2010-01-13"))
+market <- as.ts(prices,dates)
+
+```
+
+# Time Series Analysis
+
+```{r}
+View(market)
+```
+
+
+```{r}
+plot(market)
+```
+
+
+# Time Series Analysis
+# Creating Time Series
+```{r}
+a  <- ts (1:1000, frequency = 12, start = 1990) # freq 12 => Monthly data. 
+```
+
+
+```{r}
+b = rnorm(1000)
+c <- ts (b,frequency = 12, start = c(1990, 1)) # freq 12 => Monthly data. 
+#c
+```
+
+
+```{r}
+plot(c, col="pink", ylab="Temperature (Celsius)" )
+```
+
+# How to extract the trend, seasonality and error?
+# In time series data, seasonality is the presence of variations that occur at  specific regular intervals less than a year, such as weekly, monthly, or quarterly. Seasonality may be caused by various factors, such as weather, vacation, and holidays[1] and consists of periodic, repetitive, and generally regular and predictable patterns in the levels[2] of a time series.
+```{r}
+data("EuStockMarkets")
+#tsData <- EuStockMarkets[, c(1:2)] # ts data
+tsData <- EuStockMarkets[,1] # ts data
+#tsData <- EuStockMarkets
+tsData
+```
+
+
+```{r}
+# use type = "additive" for additive components
+decomposedRes <- decompose(tsData, type="mult") 
+```
+
+```{r}
+# decomposedRes # see plot below
+
+```
+
+```{r}
+plot(tsData)
+```
+
+```{r}
+plot (decomposedRes) # see plot below
+
+```
+
+# Alternative method of decomposing time series object
+```{r}
+# stl() decomposes time series into seasonal, trend and irregular (loess)
+stlRes <- stl(tsData, s.window = "periodic")
+stlRes
+```
+
+
+```{r}
+plot(stlRes)
+```
+
+# How to create lags of a time-series ?
+# Lagging mean the time series is behind due to shifting of the time base. It can either be made to lag(e.g.lag(-3)) or lead(e.g.lag(3)) by using the lag() function
+```{r}
+# shifted 3 periods earlier. Use `-3` to shift by 3 periods forward.
+laggedTS <- lag(tsData, 3) 
+```
+
+```{r}
+head(laggedTS)
+```
+
+```{r}
+plot(laggedTS)
+```
+
+```{r}
+library(DataCombine)
+
+```
+
+```{r}
+#library(DataCombine)
+myDf <- as.data.frame(tsData)
+#myDf <- slide(myDf, "x", NewVar = "xLag1", slideBy = -1)
+myDf <- slide(myDf, "x", NewVar = "xLag1", slideBy = -1)  # create lag1 variable
+myDf <- slide(myDf, "x", NewVar = "xLead1", slideBy = 3)  # create lead1 variable
+head(myDf)
+```
+
+
+```{r}
+plot(myDf)
+```
+
+# Autocorrelation is the correlation of a Time Series with lags of itself.
+# there is significant autocorrelation for all the lags shown on x-axis because they all crossed the dashed blue line
+```{r}
+# both acf() and pacf() generates plots by default
+acfRes <- acf(AirPassengers) # autocorrelation
+```
+
+# Partial Autocorrelation is the correlation of the time series with a lag of itself, with the linear dependence of all the lags between them removed.
+# The part of the lag that do not cross the dashed blue line do not correlate with the previous observation ().
+```{r}
+# pacf() - partial autocorrelation function
+pacfRes <- pacf(AirPassengers)  # partial autocorrelation
+```
+
+# Cross-correlation function: Is used to check the correlation between two time series 
+```{r}
+# computes cross correlation between 2 timeseries.
+ccfRes <- ccf(mdeaths, fdeaths, ylab = "cross-correlation")
+
+```
+
+# How to de-trend a time series ?
+```{r}
+# when modelling a time series with linear regression(lm) it must covered the whole #length of the time series object E.g. 84 in the dataset of "JohnsonJohnson"
+trModel <- lm(JohnsonJohnson ~ c(1:length(JohnsonJohnson)))
+# trModel <- lm(JohnsonJohnson ~ c(1:84)) # Alternatively
+#trModel
+```
+
+# Plot of the time series of "JohnsonJohnson" time series dataset
+```{r}
+plot(JohnsonJohnson)
+```
+
+# Plot of the de-trend "JohnsonJohnson" time series dataset i.e. the trend has been removed only contain residuals (errors)
+```{r}
+plot(trModel$residuals, type="l")
+#plot(resid(trModel), type="l")  # resid(trModel) contains the de-trended series.
+```
+
+
+# De-seasonalizing throws insight about the seasonal pattern in the time series and helps to model # the data without the seasonal effects.
+# How to de-seasonalize a time series in R
+# Step 1: Decompose the Time series using forecast::stl() 
+# Step 2: use seasadj() from ‘forecast’ package to de-seasonalize the decomposed Time series.
+```{r}
+# Loading the require library for de-seasonal process
+library(forecast)
+```
+
+
+```{r}
+TS <- AirPassengers
+dec_dt1 <- stl(TS, s.window = "periodic") # decompose the TS
+deseason_dt1 <- seasadj(dec_dt1) # de-seasonalize
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+# original series
+plot(AirPassengers, type="l", main="Time-Series of Original AirPassengers") 
+
+# seasonal adjusted
+plot(deseason_dt1, type = "l", main = "De-seasonize AirPassenger ",ylab="deseasoned dt1")  
+
+```
+
+# Season plot: Season plot of Original time series and the de-seasonized (adjusted TS) base on year
+
+```{r}
+par(mfrow=c(1,2) )
+seasonplot(deseason_dt1, 12, col=rainbow(12), year.labels=TRUE, main="Seasonal plot:Deseasonized Airpassengers")
+
+seasonplot(AirPassengers, 12, col=rainbow(12), year.labels=TRUE, main="Seasonal plot: Original Airpassengers")
+```
+
+# How to test if a time series is stationary
+# We use Augmented Dickey-Fuller Test (adf test). A p-Value of less than 0.05 in adf.test() indicates that it is stationary.
+# if p-value < 0.05 is stationary i.e. null hypothesis is rejected & alternate hypothesis is accepted
+# if p-value >= 0.05 is not stationary i.e. null hypothesis is accepted & alternate hypothesis is rejected
+```{r}
+library(tseries)
+```
+
+
+```{r}
+# p-value < 0.05 indicates the 'deseason_dt1' is stationary
+# the default is "stationary"
+# since it is stationary that means it is devoid or free of trend and seasonal
+adf.test(deseason_dt1, alternative = c("stationary","explosive"))
+```
+
+# Since p-value is less than 0.05, the null hypothesis is rejected while the alternative hypothesis is accepted which show that 'AirPassengers' is stationary
+```{r}
+# p-value < 0.05 indicates the 'AirPassengers' is stationary
+adf.test(AirPassengers) 
+
+```
+
+
+```{r}
+adf.test(tsData) # p-value < 0.05 indicates the 'tsData' is not stationary
+# kpss.test(tsData)
+```
+
+
+```{r}
+kpss.test(tsData)
+```
+
+# How to make a time series stationary
+```{r}
+library(forecast)
+
+```
+
+# Seasonal Differencing
+```{r}
+
+nsdiffs(AirPassengers)  # number for seasonal differencing needed
+```
+
+
+```{r}
+# seasonal differencing
+AirPassengers_seasdiff <- diff(AirPassengers, lag=frequency(AirPassengers), differences=1)  
+```
+
+
+```{r}
+plot(AirPassengers_seasdiff, type="l", main="Seasonally Differenced")  # still not stationary!
+```
+
+
+```{r}
+seasonplot(AirPassengers_seasdiff) # Showing that it is not stationary
+```
+
+```{r}
+seasonplot(AirPassengers_seasdiff, 12, col=rainbow(12), year.labels=TRUE, main="Seasonal plot: Already differenced season")
+```
+
+
+# Since AirPassengers_seasdiff p-value = 0.09899, that shows that it is not stationary
+```{r}
+adf.test(AirPassengers_seasdiff)
+```
+
+# Another confirmation for stationary
+```{r}
+# The autocorrelation function 'acf()' shows that it is not stationary because it falls gradually to zero
+
+AirPassengers_seasdiff_acf <- acf(AirPassengers_seasdiff)
+```
+
+# Make it stationary
+```{r}
+
+ndiffs(AirPassengers_seasdiff)  # number of differences need to make it stationary
+```
+
+
+```{r}
+stationaryTS <- diff(AirPassengers_seasdiff, differences= 1)
+
+# appears to be stationary
+plot(stationaryTS, type="l", main="Differenced and Stationary")  
+```
+
+
+```{r}
+#seasonplot(stationaryTS)
+```
+
+
+```{r}
+seasonplot(stationaryTS, 12, col=rainbow(12), year.labels=TRUE, main="Seasonal Plot: Stationary AirPassenger")
+```
+
+# p-value = 0.01, that shows that it is stationary i.e. it is devoid of trend and season
+```{r}
+library(tseries)
+adf.test(stationaryTS)
+```
+
+
+# Confirmation to show that 'stationaryTS' is stationary because it rapidly falls to zero
+```{r}
+
+acf(stationaryTS)
+```
+
+# Time Series Forecasting
+# Time series forecasting is the use of a model to predict future values based on previously observed values.
+
+# A. Simple Moving Average: Simple moving average can be calculated using ma() from forecast. The moving average smoother averages the nearest order periods of each observation
+```{r}
+sm <- ma(AirPassengers, order=12) # 12 month moving average
+plot(sm, col="red", type="l") # plot
+#lines.ts(sm, col="red", type="l") # plot
+```
+
+
+# B. Exponential Smoothing: Simple, Double and Triple exponential smoothing can be performed using the HoltWinters() function. There are multiple implementations of the Holt Winters method – hw() {forecast} and ets().
+```{r}
+# Simple exponential smoothing (SES): Level Only
+# For SES (you dont supply value for the argument alpha)
+# h is the number of periods to forecast
+model <- hw(AirPassengers, initial = "optimal", h=24, beta=NULL, gamma=NULL)
+# View(model$fitted)
+plot(model)
+```
+
+
+```{r}
+# Double Exponential smoothing (DES): It will smoothen Level and Trend components
+# # For DES (you dont supply value for the argument alpha and beta)
+model <- hw(AirPassengers, initial = "optimal", h=24, gamma=NULL)
+plot(model)
+
+```
+
+# Table showing the forecasted values and the year
+```{r}
+#A <- data.frame(model$x, model$upper,model$lower)
+A <- data.frame(model)
+View(A)
+```
+
+
+```{r}
+# Holt Winters: It will smoothen Level, Trend and Seasonality
+# # For Holt winters (you dont supply value for the argument alpha, beta and gamma)
+model <- hw(AirPassengers, initial = "optimal", h=24)
+plot(model)
+accuracy(model) # calculate accuracy measures
+
+```
+
+# Triple exponential smoothing
+```{r}
+# Holt Winters: It will smoothen  Level, Trend and Seasonality
+model <- hw(stationaryTS, initial = "optimal", h=120 )
+plot(model)
+accuracy(model) # calculate accuracy measures
+
+```
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(model$upper, col = model$level, ylab= "No of forecast Passenger",xlab="accuracy level", main = "Upper Limit Prediction Intervals")
+
+boxplot(model$lower, col = model$level, ylab= "No of forecast Passenger",xlab="accuracy level", main = "Lower Limit Prediction Intervals")
+```
+
+```{r}
+
+model <- hw(deseason_dt1, initial = "optimal", h=24 )
+plot(model)
+accuracy(model) # calculate accuracy measures
+
+```
+
+# ARIMA - AutoRegressive Integrated Moving Average
+
+#1. auto.arima() function
+```{r}
+# Fit and forecast with auto.arima()
+# autoArimaFit <- auto.arima(stationaryTS)
+autoArimaFit <- auto.arima(AirPassengers)
+autoArimaFit <- forecast(autoArimaFit, h=20)
+plot(autoArimaFit)
+#plot(forecast(autoArimaFit, h=20))
+
+```
+
+# View the forecast for another 20 months at different accuracy 80(High & Low),90 (High & low) and point forecast (median)
+```{r}
+View(data.frame(autoArimaFit))
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(autoArimaFit$lower, ylab="No of Passengers", col=autoArimaFit$level )
+boxplot(autoArimaFit$upper, ylab="No of Passengers", col=autoArimaFit$level)
+```
+
+#2. Arima() function
+```{r}
+# Fit and forecast with Arima()
+arimaFit <- Arima(AirPassengers,order=c(3,1,0))
+plot(forecast(arimaFit,h=20))
+```
+
+# How To Forecast ARIMA Models With Long Seasonality (Greater Than 350 Periods)
+CASE 1: 
+```{r}
+Fit <- Arima(AirPassengers,order=c(3,1,0))  # fit Arima model
+plot(forecast(Fit,h=20))
+```
+# Fitting auto.arima() on the TS (AirPassengers)
+```{r}
+# fit auto.arima model
+#dt <- c(AirPassengers)
+Fit <- auto.arima(AirPassengers, seasonal=FALSE)
+#Fit <- auto.arima(AirPassengers, seasonal=FALSE, xreg=fourier(AirPassengers,4))
+plot(forecast(Fit,h=20))
+
+```
+
+# CASE 2: Alternative method 
+```{r}
+pred <- predict (Fit, newxreg=newXregVar) # alternate way to forecast
+plot(forecast(Fit, h=20, xreg=fourierf(AirPassengers,4,h=20))) # h is number of forecasts
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+

@@ -1,0 +1,2 @@
+"0","# seasonal differencing"
+"0","AirPassengers_seasdiff <- diff(AirPassengers, lag=frequency(AirPassengers), differences=1)  "

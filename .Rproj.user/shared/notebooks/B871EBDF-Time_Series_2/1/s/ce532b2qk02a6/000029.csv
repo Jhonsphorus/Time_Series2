@@ -1,0 +1,3 @@
+"0","#This will aggregate the cycles and display a year on year trend i.e. the mean or median in each year"
+"0","par(mfrow=c(1,2))"
+"0","plot(aggregate(AirPassengers,FUN=median))"

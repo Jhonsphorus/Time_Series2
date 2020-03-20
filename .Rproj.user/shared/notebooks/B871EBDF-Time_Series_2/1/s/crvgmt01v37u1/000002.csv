@@ -1,0 +1,1 @@
+"0","pred <- predict(fit, n.ahead = 10*12)"

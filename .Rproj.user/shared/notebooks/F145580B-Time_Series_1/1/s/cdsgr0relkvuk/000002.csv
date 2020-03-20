@@ -1,0 +1,2 @@
+"0","# pacf() - partial autocorrelation function"
+"0","pacfRes <- pacf(AirPassengers)  # partial autocorrelation"

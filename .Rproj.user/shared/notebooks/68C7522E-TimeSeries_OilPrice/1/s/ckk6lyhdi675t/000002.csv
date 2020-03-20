@@ -1,0 +1,2 @@
+"0","price_ma <- ma(dt_oil, order = 365)"
+"0","plot(price_ma)"

@@ -1,0 +1,2 @@
+"0","sm <- ma(AirPassengers, order=12) # 12 month moving average"
+"0","plot(sm, col=""red"", type=""l"") # plot"

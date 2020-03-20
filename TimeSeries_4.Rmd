@@ -1,0 +1,491 @@
+---
+title: "TimeSeries_4"
+author: "Johnson Adebayo_SCV1007 (Cohort 1)"
+date: "3/19/2020"
+output: html_document
+---
+
+# Source: https://blogs.oracle.com/datascience/introduction-to-forecasting-with-arima-in-r
+
+# 1. Examine your data
+
+- Plot the data and examine its patterns and irregularities
+- Clean up any outliers or missing values if needed
+   tsclean()
+- is a convenient method for outlier removal and inputing missing values
+- Take a logarithm of a series to help stabilize a strong growth trend
+
+2. Decompose your data
+
+- Does the series appear to have trends or seasonality?
+- Use
+  decompose()
+  or
+  stl()
+- to examine and possibly remove components of the series
+
+3. Stationarity
+
+- Is the series stationary?
+  Use
+  adf.test()
+  , ACF, PACF plots to determine order of differencing needed
+
+
+4. Autocorrelations and choosing model order
+
+- Choose order of the ARIMA by examining ACF and PACF plots
+
+5. Fit an ARIMA model
+
+6. Evaluate and iterate
+
+- Check residuals, which should haven no patterns and be normally distributed
+- If there are visible patterns or bias, plot ACF/PACF. Are any additional order parameters needed?
+- Refit model if needed. Compare model errors and fit criteria such as AIC or BIC.
+- Calculate forecast using the chosen model
+
+# N
+An auto regressive (AR(p)) component is referring to the use of past values in the regression equation for the series Y. The auto-regressive parameter p specifies the number of lags used in the model. For example, AR(2) or, equivalently, ARIMA(2,0,0), is represented as
+
+# $$Y_t = c + \phi_1y_{t-1} + \phi_2 y_{t-2}+ e_t$$
+
+where φ1, φ2 are parameters for the model.
+
+The d represents the degree of differencing in the integrated (I(d)) component. Differencing a series involves simply subtracting its current and previous values d times. Often, differencing is used to stabilize the series when the stationarity assumption is not met, which we will discuss below.
+
+A moving average (MA(q)) component represents the error of the model as a combination of previous error terms et. The order q determines the number of terms to include in the model
+
+# $$Y_t = c + \theta_1 e_{t-1} + \theta_2 e_{t-2} +...+ \theta_q e_{t-q}+ e_t$$
+
+Differencing, autoregressive, and moving average components make up a non-seasonal ARIMA model which can be written as a linear equation:
+
+# $$ Y_t = c + \phi_1y_d{_{t-1}} + \phi_p y_d{_{t-p}}+...+\theta_1 e_{t-1} +  \theta_q e_{t-q} + e_t$$
+
+where yd is Y differenced d times and c is a constant.
+
+#NOTE:
+ARIMA methodology does have its limitations. These models directly rely on past values, and therefore work best on long and stable series. Also note that ARIMA simply approximates historical patterns and therefore does not aim to explain the structure of the underlying data mechanism.
+
+
+# Step 1: Load R Packages 
+```{r}
+library('ggplot2')
+library('forecast')
+library('tseries')
+```
+
+
+```{r}
+#bike <- read.csv("day.csv")
+daily_data = read.csv('day.csv', header=TRUE, stringsAsFactors=FALSE)
+```
+
+```{r}
+View(daily_data)
+```
+
+
+Step 2: Examine Your Data
+```{r}
+daily_data$Date = as.Date(daily_data$dteday)
+
+ggplot(daily_data, aes(Date, cnt)) + geom_line() + scale_x_date('month')  + ylab("Daily Bike Checkouts") + xlab("")
+```
+
+
+```{r}
+# Converting the dataset to time series
+count_ts = ts(daily_data[, c('cnt')])
+
+# cleaning dataset to remove outlier etc
+daily_data$clean_cnt = tsclean(count_ts)
+
+ggplot() + geom_line(data = daily_data, aes(x = Date, y = clean_cnt)) + ylab('Cleaned Bicycle Count') 
+```
+
+```{r}
+# plot(count_ts, )
+```
+
+# Plotting the already averaged TS
+
+# Purpose of moving average ma(): It is an intuitive concept that averages points across several time periods, thereby smoothing the observed data into a more stable predictable series.
+```{r}
+# using the clean count with no outliers
+daily_data$cnt_ma = ma(daily_data$clean_cnt, order=7) # running the moving average for weekly
+daily_data$cnt_ma30 = ma(daily_data$clean_cnt, order=30) # running the moving average monthly
+
+
+ggplot() + 
+  geom_line(data = daily_data, aes(x = Date, y = clean_cnt, colour = "Counts")) +
+  geom_line(data = daily_data, aes(x = Date, y = cnt_ma,   colour = "Weekly Moving Average"))  +
+  geom_line(data = daily_data, aes(x = Date, y = cnt_ma30, colour = "Monthly Moving Average"))  +
+  ylab('Bicycle Count') 
+```
+
+# Step 3: Decompose Your Data
+
+# The plot below shows that the TS is not stationary because it has trend i.e. the change in the time series changes wit time as shown in the trend and data plot blow
+```{r}
+# converting count_ma to TS
+#count_ma = ts(na.omit(daily_data$cnt_ma), frequency=30) 
+count_ma = ts(na.omit(daily_data[ ,c('cnt_ma')]), frequency=30) 
+
+# Decomposing count_ma
+decomp = stl(count_ma, s.window="periodic")
+
+# De-seasonalizing the TS
+deseasonal_cnt <- seasadj(decomp)
+plot(decomp) 
+#plot(deseasonal_cnt)
+```
+
+
+# Step 4: Stationarity
+
+# Fitting an ARIMA model requires the series to be stationary. A series is said to be stationary when its mean (level), variance(trend), and autocovariance(seasonal) are time invariant (not changing with time).
+
+# In the most intuitive sense, stationarity means that the statistical properties of a process generating a time series do not change over time. It does not mean that the series does not change over time, just that the way it changes does not itself change over time
+
+# The augmented Dickey-Fuller (ADF) test is a formal statistical test for stationarity. The null hypothesis (p-value >0.05) assumes that the series is non-stationary.
+
+# The test below shows that the TS is not stationary
+```{r}
+ adf.test(count_ma, alternative = "stationary")
+
+```
+# To stationalize the TS
+```{r}
+ndiffs(count_ma)
+```
+
+# Differencing the series can help in removing its trend or cycles. The idea behind differencing is that, if the original data series does not have constant properties over time, then the change from one period to another might. The difference is calculated by subtracting one period's values from the previous period's values:
+
+# Ydt = Yt - Yt-1
+```{r}
+countma_diff <- diff(count_ma, differences = 1 )
+```
+
+
+# Step 5: Autocorrelations and Choosing Model Order
+
+# ACF plots display correlation between a series and its lags. In addition to suggesting the order of differencing, ACF plots can help in determining the order of the M A (q) model. Partial autocorrelation plots (PACF), as the name suggests, display correlation between a variable and its lags that is not explained by previous lags. PACF plots are useful when determining the order of the AR(p) model.
+
+```{r}
+Acf(count_ma, main='Autocorrelation of Rented Bike ')
+```
+
+```{r}
+Pacf(count_ma, main='Partial Autocorrelation of Rented Bike')
+```
+# checking if the countma_diff is stationary
+```{r}
+adf.test(countma_diff)
+```
+# Plotting th acf() of  countma_diff 
+```{r}
+acf(countma_diff)
+```
+
+# Plotting th pacf() of  countma_diff 
+```{r}
+pacf(countma_diff)
+```
+
+# Finding the number of differencing for the de-seasonalized of count TS
+```{r}
+ndiffs(deseasonal_cnt)
+```
+# The augmented Dickey-Fuller test on differenced data rejects the null hypotheses of non-stationarity. Plotting the differenced series, we see an oscillating pattern around 0 with no visible strong trend. This suggests that differencing of order 1 terms is sufficient and should be included in the model. 
+```{r}
+# The stationalized count_d1
+count_d1 = diff(deseasonal_cnt, differences = 1)
+plot(count_d1)
+adf.test(count_d1, alternative = "stationary")
+
+```
+
+```{r}
+Acf(count_d1, main='ACF for Differenced Series')
+Pacf(count_d1, main='PACF for Differenced Series') 
+```
+
+
+# Step 6: Fitting an ARIMA model
+
+# Now let's fit a model. The forecast
+  package allows the user to explicitly specify the order of the model using the 
+  arima() function, or automatically generate a set of optimal (p, d, q) using auto.arima()
+  
+# While auto.arima() can be very useful, it is still important to complete steps 1-5 in order to understand the series and interpret model results. Note that auto.arima() also allows the user to specify maximum order for (p, d, q), which is set to 5 by default.
+
+```{r}
+fit1 <- auto.arima(deseasonal_cnt, seasonal=FALSE)
+fit1
+```
+
+```{r}
+forecast1 <- forecast(fit1, h=10*30)
+plot(forecast1)
+
+
+```
+Alternatively: 
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+

@@ -1,0 +1,2 @@
+"0","par(mfrow=c(1,2))"
+"0","boxplot(autoArimaFit$lower, ylab=""No of Passengers"", col=autoArimaFit$level )"

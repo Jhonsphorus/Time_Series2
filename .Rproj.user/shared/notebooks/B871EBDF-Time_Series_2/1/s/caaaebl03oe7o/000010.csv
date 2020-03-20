@@ -1,0 +1,2 @@
+"0","#plot(decompose(AirPassengers))"
+"0","plot(stl(AirPassengers, s.window =""periodic""))"

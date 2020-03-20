@@ -1,0 +1,1 @@
+"0","seasonplot(AirPassengers_seasdiff, 12, col=rainbow(12), year.labels=TRUE, main=""Seasonal plot: Already differenced season"")"

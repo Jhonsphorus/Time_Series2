@@ -1,0 +1,2 @@
+"0","library(forecast)"
+"0","seasonplot(AirPassengers, 12, col=rainbow(12), year.labels=TRUE, main=""Seasonal Plot: AirPassenger"")"

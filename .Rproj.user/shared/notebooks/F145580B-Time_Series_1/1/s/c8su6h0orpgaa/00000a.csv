@@ -1,0 +1,3 @@
+"0","#A <- data.frame(model$x, model$upper,model$lower)"
+"0","A <- data.frame(model)"
+"0","View(A)"

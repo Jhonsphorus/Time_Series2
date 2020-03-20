@@ -1,0 +1,20 @@
+"0","#library(DataCombine)"
+"0","myDf <- as.data.frame(tsData)"
+"0","#myDf <- slide(myDf, ""x"", NewVar = ""xLag1"", slideBy = -1)"
+"0","myDf <- slide(myDf, ""x"", NewVar = ""xLag1"", slideBy = -1)  # create lag1 variable"
+"2","
+Remember to put myDf in time order before running.
+"
+"2","
+Lagging x by 1 time units.
+
+"
+"0","myDf <- slide(myDf, ""x"", NewVar = ""xLead1"", slideBy = 3)  # create lead1 variable"
+"2","
+Remember to put myDf in time order before running.
+"
+"2","
+Leading x by 3 time units.
+
+"
+"0","head(myDf)"

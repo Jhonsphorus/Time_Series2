@@ -1,0 +1,5 @@
+"0","# To extract all the values in the 'AirPassengers' time series"
+"0","sub_air = subset(AirPassengers,subset=TRUE,start=start(AirPassengers),end=end(AirPassengers))"
+"2","Error in subset.ts(AirPassengers, subset = TRUE, start = start(AirPassengers),  : 
+  subset must be the same length as x
+"

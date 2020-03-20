@@ -1,0 +1,2 @@
+"0","#plot(forecast(forecast_autoarima))"
+"0","plot(forecast_autoarima)"

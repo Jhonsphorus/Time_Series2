@@ -1,0 +1,2 @@
+"0","#ACF Plots: The plot below shows that the TS is decaying at a very slower rate, showing that the dt_log is not stationary"
+"0","acf(dt_log)"

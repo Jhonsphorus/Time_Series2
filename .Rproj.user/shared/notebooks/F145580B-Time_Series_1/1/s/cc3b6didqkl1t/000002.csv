@@ -1,0 +1,2 @@
+"0","# use type = ""additive"" for additive components"
+"0","decomposedRes <- decompose(tsData, type=""mult"") "

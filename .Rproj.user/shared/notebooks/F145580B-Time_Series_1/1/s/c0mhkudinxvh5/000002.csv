@@ -1,0 +1,1 @@
+"0","seasonplot(stationaryTS, 12, col=rainbow(12), year.labels=TRUE, main=""Seasonal Plot: Stationary AirPassenger"")"

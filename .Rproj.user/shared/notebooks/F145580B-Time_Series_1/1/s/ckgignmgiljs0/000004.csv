@@ -1,0 +1,3 @@
+"0","# Holt Winters: Level, Trend and Seasonality"
+"0","model <- hw(AirPassengers, initial = ""optimal"", h=24)"
+"0","plot(model)"

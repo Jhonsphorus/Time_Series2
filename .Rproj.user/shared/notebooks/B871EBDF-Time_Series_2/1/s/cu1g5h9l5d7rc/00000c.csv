@@ -1,0 +1,3 @@
+"0","#abline(reg=lm(AirPassengers~time(AirPassengers)))"
+"0","abline(reg=lm(sub_air~time(AirPassengers)))"
+"0",""

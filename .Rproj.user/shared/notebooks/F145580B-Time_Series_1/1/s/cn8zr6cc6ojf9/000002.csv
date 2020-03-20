@@ -1,0 +1,6 @@
+"0","# Seasonal Differencing"
+"0","nsdiffs(AirPassengers)  # number for seasonal differencing needed"
+"1","[1]"
+"1"," 1"
+"1","
+"

@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1583848899419.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1419789252",
+    "id" : "43A9C68",
+    "lastKnownWriteTime" : 1584479750,
+    "last_content_update" : 1584618896270,
+    "path" : "~/RProject/Personal_Projects/Time_Series/TimeSeries_OilPrice.Rmd",
+    "project_path" : "TimeSeries_OilPrice.Rmd",
+    "properties" : {
+        "cursorPosition" : "167,29",
+        "scrollLine" : "165",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

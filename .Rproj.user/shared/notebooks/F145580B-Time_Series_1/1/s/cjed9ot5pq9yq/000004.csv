@@ -1,0 +1,4 @@
+"0",""
+"0","# seasonal adjusted"
+"0","plot(deseason_dt1, type = ""l"", main = ""De-seasonize AirPassenger "",ylab=""deseasoned dt1"")  "
+"0",""

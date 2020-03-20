@@ -1,0 +1,1 @@
+"0","#plot(resid(trModel), type=""l"")  # resid(trModel) contains the de-trended series."

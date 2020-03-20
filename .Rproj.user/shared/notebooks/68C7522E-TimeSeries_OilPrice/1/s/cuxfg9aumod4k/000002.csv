@@ -1,0 +1,1 @@
+"0","dt_oil = ts(oilPrice,frequency = 365, start = c(1987, 5,20), end = c(2020,2,25))"

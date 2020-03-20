@@ -1,0 +1,2 @@
+"0","par(mfrow=c(1,2) )"
+"0","seasonplot(deseason_dt1, 12, col=rainbow(12), year.labels=TRUE, main=""Seasonal plot:Deseasonized Airpassengers"")"

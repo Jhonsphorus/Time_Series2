@@ -1,0 +1,5 @@
+"0","autoArimafit <- auto.arima(dt_log)"
+"0","forecast_val <- forecast(autoArimafit, h=120)"
+"0","ts.plot(2.718^forecast_val,log = ""y"")"
+"2","Error in 2.718^forecast_val : non-numeric argument to binary operator
+"

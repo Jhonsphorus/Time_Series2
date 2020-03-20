@@ -1,0 +1,6 @@
+"0","# fit auto.arima model"
+"0","#dt <- c(AirPassengers)"
+"0","Fit <- auto.arima(AirPassengers, seasonal=FALSE)"
+"0","#Fit <- auto.arima(AirPassengers, seasonal=FALSE, xreg=fourier(AirPassengers,4))"
+"0","plot(forecast(Fit,h=20))"
+"0",""

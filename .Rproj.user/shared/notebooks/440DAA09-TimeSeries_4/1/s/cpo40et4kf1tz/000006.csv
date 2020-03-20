@@ -1,0 +1,7 @@
+"0","# Converting the dataset to time series"
+"0","count_ts = ts(daily_data[, c('cnt')])"
+"0",""
+"0","# cleaning dataset to remove outlier etc"
+"0","daily_data$clean_cnt = tsclean(count_ts)"
+"0",""
+"0","ggplot() + geom_line(data = daily_data, aes(x = Date, y = clean_cnt)) + ylab('Cleaned Bicycle Count') "

@@ -1,0 +1,3 @@
+"0","# computes cross correlation between 2 timeseries."
+"0","ccfRes <- ccf(mdeaths, fdeaths, ylab = ""cross-correlation"")"
+"0",""

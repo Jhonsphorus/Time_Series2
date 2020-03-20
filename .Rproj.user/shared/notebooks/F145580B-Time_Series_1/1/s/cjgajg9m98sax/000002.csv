@@ -1,0 +1,3 @@
+"0","# Holt Winters: It will smoothen  Level, Trend and Seasonality"
+"0","model <- hw(stationaryTS, initial = ""optimal"", h=120 )"
+"0","plot(model)"

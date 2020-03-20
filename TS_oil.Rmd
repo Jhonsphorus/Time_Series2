@@ -1,0 +1,224 @@
+---
+title: "TimeSeries_CrudeoilPrice"
+author: "Johnson Adebayo_SCV1007 (Cohort 1)"
+date: "3/10/2020"
+output: html_document
+---
+
+```{r}
+oilPrice <- read.csv("BrentOilPrices.csv" )
+View(oilPrice) 
+```
+
+```{r}
+dt_oil = ts(oilPrice,frequency = 365, start = c(1987, 5,20), end = c(2020,2,25))
+```
+
+
+```{r}
+class(dt_oil)
+```
+
+```{r}
+str(dt_oil)
+```
+```{r}
+
+plot(dt_oil, xlab = "Date", ylab = "Oil Price ($)")
+abline(reg=lm(dt_oil~time(dt_oil)))
+#abline(reg=lm(dt_oil~time(dt_oil)))
+```
+
+```{r}
+start(dt_oil)
+```
+
+```{r}
+end(dt_oil)
+```
+
+```{r}
+frequency(dt_oil)
+```
+
+
+```{r}
+summary(dt_oil)
+```
+
+# Plot of the aggregate to show the level and trend
+```{r}
+plot(aggregate(dt_oil, FUN = mean))
+```
+
+```{r}
+boxplot(dt_oil~cycle(dt_oil), col=c("red","green","blue","yellow"))
+```
+
+```{r}
+boxplot(dt_oil, col = "red")
+```
+
+```{r}
+library(forecast)
+seasonplot(dt_oil, 365, col=rainbow(21), year.labels=TRUE, main="Seasonality Plot")
+```
+
+```{r}
+plot(decompose(dt_oil))
+```
+
+```{r}
+plot(stl(dt_oil, s.window = "periodic"))
+```
+
+Step 2: Stationalize the TS
+```{r}
+library(tseries)
+```
+
+# From the adf.test() below it shows that the dt Time Series (TS) is not stationary because the p-value >0.05, which makes the null hypothesis to be accepted
+```{r}
+adf.test(dt_oil)
+```
+
+
+```{r}
+ndiffs(dt_oil)
+```
+
+```{r}
+oilprice_diff <- diff(dt_oil, differences = 1)
+```
+
+
+# To check if the oilprice TS is stationary
+# from the adf.test above it shows that the TS is stationary
+```{r}
+adf.test(oilprice_diff)
+```
+
+# Plot of Stationarized TS
+```{r}
+plot(oilprice_diff)
+```
+
+# Step 3: To find the parameters
+
+# The auto-correlation function plot below shows that the TS (dt_oil) is not decaying at all because it is not stationary
+```{r}
+acf(dt_oil)
+```
+
+# From the result of acf() on oilprice_diff we obtain the parameters: (p,d,q)=(0,1,1)
+# NOTE: my q can be 1,2,3,4,5,6,7,8 etc because the ACF cut off the blue dashed lines at those points which makes MA or q =1,2,3,4,5,6,7,8 etc and AR or p =0
+```{r}
+acf(oilprice_diff)
+```
+
+
+```{r}
+pacf(oilprice_diff)
+```
+
+
+# Step 4: Building the ARIMA model
+# Fit ARIMA Model:Let’s fit an ARIMA model
+```{r}
+
+# By specifying the order and the seasonality, the stationary has being taken care of.
+fit <- arima(dt_oil, order=c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period =4))
+```
+
+
+```{r}
+#Price <- oilPrice$Price
+#Date <- as.Date(oilPrice$Date)
+price <- as.ts(oilPrice$Date,oilPrice$Price)
+```
+
+```{r}
+str(price)
+```
+
+```{r}
+plot(oilPrice)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+

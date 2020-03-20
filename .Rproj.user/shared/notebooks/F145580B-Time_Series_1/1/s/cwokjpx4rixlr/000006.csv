@@ -1,0 +1,5 @@
+"0","# Fit and forecast with auto.arima()"
+"0","# autoArimaFit <- auto.arima(stationaryTS)"
+"0","autoArimaFit <- auto.arima(AirPassengers)"
+"0","autoArimaFit <- forecast(autoArimaFit, h=20)"
+"0","plot(autoArimaFit)"

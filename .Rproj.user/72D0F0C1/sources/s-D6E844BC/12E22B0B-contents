@@ -1,0 +1,533 @@
+---
+title: "Time_Series_2"
+author: "Johnson Adebayo_SCV1007 (Cohort 1)"
+date: "3/9/2020"
+output: html_document
+---
+# Source: https://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/
+
+# 1.
+# NOTE: We have to test if Rho – 1 is significantly different than zero or not. If the null hypothesis gets rejected(i.e. p-value <0.05), we’ll get a stationary time series.
+
+If null hypothesis is accepted (i.e. p-value >0.05), then the TS is non-stationary
+
+Stationary testing and converting a series into a stationary series are the most critical processes in a time series modelling. You need to memorize each and every detail of this concept to move on to the next step of time series modelling.
+
+# 2. Exploration of Time Series Data in R
+
+
+# A. Loading the Data Set
+Following is the code which will help you load the data set and spill out a few top level metrics.
+```{r}
+# Loading the 'AirPassengers' dataset
+data(AirPassengers)
+
+#This tells you that the data series is in a time series format
+class(AirPassengers)
+```
+
+
+```{r}
+#This is the start of the time series
+start(AirPassengers)
+```
+
+```{r}
+#This is the end of the time series
+end(AirPassengers)
+```
+
+```{r}
+#The cycle of this time series is 12months in a year
+frequency(AirPassengers)
+
+```
+
+```{r}
+#This will print the cycle across years.
+cycle(AirPassengers)
+```
+
+```{r}
+##The number of passengers are distributed across the spectrum
+summary(AirPassengers)
+```
+
+```{r}
+# To extract all the values in the 'AirPassengers' time series
+sub_air = subset(AirPassengers,subset=TRUE,start=start(AirPassengers),end=end(AirPassengers))
+# boxplot of the values in the 'AirPassengers' dataset to determine the spread of values
+# i.e. mean , minimum, maximum
+boxplot(sub_air, col = "green", ylab="No of Passengers",border ="blue" )
+```
+
+```{r}
+hist(sub_air, col = "green", ylab="No of Passengers",border ="blue" )
+```
+
+B. Detailed Metrics
+```{r}
+#This will plot the time series
+plot(AirPassengers)
+```
+
+```{r}
+# This will fit in a line
+plot(AirPassengers)
+#abline(reg=lm(AirPassengers~time(AirPassengers)))
+abline(reg=lm(sub_air~time(AirPassengers)))
+
+```
+
+```{r}
+#time(AirPassengers)
+```
+
+```{r}
+cycle(AirPassengers)
+```
+# The plot of the aggregate shows us the levels (average or mean or median ) of each year.
+# From this plot we can now ascertain the trend of the series (i.e. how the values of the series is increasing or decreasing)
+```{r}
+#This will aggregate the cycles and display a year on year trend i.e. the mean or median in each year
+par(mfrow=c(1,2))
+plot(aggregate(AirPassengers,FUN=median))
+plot(aggregate(AirPassengers,FUN=mean))
+
+```
+
+# This shows variation in each month
+```{r}
+#Box plot across months will give us a sense on seasonal effect
+boxplot(AirPassengers~cycle(AirPassengers),col=c("red","green","blue","yellow","cyan","orange","pink","purple","magenta","white"))
+
+```
+
+# This shows seasonality for each month across the whole 12 yrs
+```{r}
+library(forecast)
+seasonplot(AirPassengers, 12, col=rainbow(12), year.labels=TRUE, main="Seasonal Plot: AirPassenger")
+
+
+```
+# Alternative method of checking level, trend & seasonality
+```{r}
+#plot(decompose(AirPassengers))
+plot(stl(AirPassengers, s.window ="periodic"))
+```
+
+# Important Inferences
+# From the three plots above, we can make the following inferences;
+1. The year on year trend clearly shows that the passengers have been increasing without fail.(plot 1&4)
+2. The variance and the mean value in July and August is much higher than rest of the months. (plot 2)
+3. Even though the mean value of each month is quite different their variance is small. Hence, we have strong seasonal effect with a cycle of 12 months or less. (plot 2,3&4)
+
+
+# 3. Introduction to ARMA Time Series Modeling
+
+Difference between AR(Auto-Regressive) and MA(Moving Average) models
+The primary difference between an AR and MA model is based on the correlation between time series objects at different time points. The correlation between x(t) and x(t-n) for n > order of MA is always zero. This directly flows from the fact that covariance between x(t) and x(t-n) is zero for MA models (something which we refer from the example taken in the previous section). However, the correlation of x(t) and x(t-n) gradually declines with n becoming larger in the AR model. This difference gets exploited irrespective of having the AR model or MA model. The correlation plot can give us the order of MA model.
+
+# Note: 
+Q1. Is it an AR or MA process? It is AR if the acf() function plot fall gradually while it is MA if the acf function falls rapidly
+
+Q2. What order of AR or MA process do we need to use? the order is the number of lines that crosses the blue dashed lines of pacf() in the case of AR process & the number of lines that crosses the dash blue lines in acf() in the case of MA
+
+# Overview of the Framework
+Below is the step by step approach on ‘How to do a Time Series Analysis‘:
+
+Step 1: Visualize the Time Series
+It is essential to analyze the trends prior to building any kind of time series model. The details we are interested in pertains to any kind of trend, seasonality or random behaviour in the series. We have covered this part in the second part of this series.
+
+Step 2: Stationarize the Series
+Once we know the patterns, trends, cycles and seasonality , we can check if the series is stationary or not. Dickey – Fuller is one of the popular test to check the same. We have covered this test in the first part of this article series. This doesn’t ends here! What if the series is found to be non-stationary?
+ a. by detrending
+ b. by differencing
+ c. by seasonality
+ 
+Step 3: Plot ACF/PACF chats and find Optimal Parameters
+The parameters p,d,q can be found using  ACF and PACF plots. An addition to this approach it can be, if both ACF and PACF decreases gradually, it indicates that we need to make the time series stationary and introduce a value to “d”.
+
+Step 4: Build ARIMA Model
+With the parameters in hand, we can now try to build ARIMA model. The value found in the previous section might be an approximate estimate and we need to explore more (p,d,q) combinations. The one with the lowest BIC and AIC should be our choice. We can also try some models with a seasonal component. Just in case, we notice any seasonality in ACF/PACF plots.
+
+Step 5: Make Predictions
+Once we have the final ARIMA model, we are now ready to make predictions on the future time points. We can also visualize the trends to cross validate if the model works fine.
+
+```{r}
+ndiffs(AirPassengers)
+```
+
+step 1: visualizing the TS
+```{r}
+data("AirPassengers")
+dt <- AirPassengers
+```
+
+```{r}
+plot(dt)
+```
+
+```{r}
+adf.test(dt)
+```
+Step 2: To stationalize the TS
+# Due to the increase in variance from the plot, we take the log of 'AirPassengers'
+# There is need to remove unequal variances
+```{r}
+dt_log <- log(AirPassengers)
+
+```
+
+# There is need to address the trend component. We do this by taking difference of the series
+
+```{r}
+# The number of differencing is 1
+ndiffs(dt_log)
+```
+
+```{r}
+dt_diff <- diff(dt_log)
+```
+
+# Test for stationary
+# From the result below, we see that the series is stationary enough to do any kind of time series modelling
+```{r}
+adf.test(dt_diff, alternative="stationary", k=0)
+```
+```{r}
+plot(dt_diff, main = "Stationary AirPassenger TS ")
+
+```
+
+# Step 3: To find the parameters
+```{r}
+#ACF Plots: The plot below shows that the TS is decaying at a very slower rate, showing that the dt_log is not stationary
+acf(dt_log)
+```
+
+```{r}
+#ACF Plots
+acf(dt_diff)
+```
+
+```{r}
+#PACF Plots
+pacf(dt_diff)
+```
+
+# Step 4:
+# Fit ARIMA Model:Let’s fit an ARIMA model
+```{r}
+# By specifying the order and the seasonality, the stationary has being taken care of.
+fit <- arima(dt_log, order=c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period = 12))
+```
+
+# Step 5: Making prediction
+#  Predict the future 10 years(10*12)
+```{r}
+pred <- predict(fit, n.ahead = 10*12)
+```
+
+# Plotting the forecasted (predicted) values
+```{r}
+# 2.718^pred$pred for converting the logarithm value of 'AirPassenger' back to normal values
+ts.plot(AirPassengers,2.718^pred$pred, log = "y", lty = c(1,3))
+```
+Alternatively
+```{r}
+arimafit <- Arima(dt_log, order = c(0,1,2))
+```
+
+```{r}
+plot(forecast(arimafit), h=100)
+```
+
+# Using auto.Arima()
+```{r}
+autoArimafit <- auto.arima(dt_log)
+forecast_val <- forecast(autoArimafit, h=120)
+ts.plot(2.718^forecast_val,log = "y")
+```
+
+```{r}
+plot(forecast_val)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+

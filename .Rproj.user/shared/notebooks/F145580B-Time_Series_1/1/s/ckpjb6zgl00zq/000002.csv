@@ -1,0 +1,2 @@
+"0","par(mfrow=c(1,2))"
+"0","boxplot(model$upper, col = model$level, ylab= ""No of forecast Passenger"",xlab=""accuracy level"", main = ""Upper Limit Prediction Intervals"")"

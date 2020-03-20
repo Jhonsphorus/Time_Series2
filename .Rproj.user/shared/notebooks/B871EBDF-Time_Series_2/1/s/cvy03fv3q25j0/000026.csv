@@ -1,0 +1,2 @@
+"0","# 2.718^pred$pred for converting the logarithm value of 'AirPassenger' back to normal values"
+"0","ts.plot(AirPassengers,2.718^pred$pred, log = ""y"", lty = c(1,3))"

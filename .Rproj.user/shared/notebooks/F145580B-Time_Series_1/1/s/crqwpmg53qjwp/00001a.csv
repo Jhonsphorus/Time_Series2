@@ -1,0 +1,2 @@
+"0","Fit <- Arima(AirPassengers,order=c(3,1,0))  # fit Arima model"
+"0","plot(forecast(Fit,h=20))"

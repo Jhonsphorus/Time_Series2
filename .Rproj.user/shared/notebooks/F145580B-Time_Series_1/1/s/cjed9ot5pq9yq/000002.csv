@@ -1,0 +1,4 @@
+"0","par(mfrow=c(1,2))"
+"0",""
+"0","# original series"
+"0","plot(AirPassengers, type=""l"", main=""Time-Series of Original AirPassengers"") "

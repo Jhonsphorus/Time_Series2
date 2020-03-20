@@ -1,0 +1,4 @@
+"0","# Double Exponential smoothing: Level and Trend components"
+"0","model <- hw(AirPassengers, initial = ""optimal"", h=24, gamma=NULL)"
+"0","plot(model)"
+"0",""

@@ -1,0 +1,2 @@
+"0","model3 <- hw(dt_diff, initial = ""optimal"", h=40)"
+"0","plot(model3)"

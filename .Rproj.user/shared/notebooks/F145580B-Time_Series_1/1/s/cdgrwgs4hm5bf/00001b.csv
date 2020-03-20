@@ -1,0 +1,4 @@
+"0","# Simple exponential smoothing: Level Only"
+"0","# h is the number of periods to forecast"
+"0","model <- hw(AirPassengers, initial = ""optimal"", h=24, beta=NULL, gamma=NULL) # View(model$fitted)"
+"0","plot(model)"
